@@ -310,12 +310,28 @@ namespace MySelfManager
         private void MySelfManager_FormClosed(object sender, FormClosedEventArgs e)
         {
             SaveTaskHistory();
+
+            // fixme: なんか例外がでるので対策。原因不明
+            Deactivate -= MySelfManager_Deactivate;
         }
 
         private void EraseTask_ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             TaskInfoManager.Remove(taskTreeView_.SelectedNode?.FullPath);
             FullUpdate();
+        }
+
+        // 自身がアクティブになったとき
+        private void MySelfManager_Activated(object sender, EventArgs e)
+        {
+            Opacity = 1.0;
+        }
+        // 自身が非アクティブになったとき
+        private void MySelfManager_Deactivate(object sender, EventArgs e)
+        {
+            // todo 後々ツールの設定から編集できるようにする
+            const double DeactivateOpacity = 0.20;
+            Opacity = DeactivateOpacity;
         }
     }
 }
