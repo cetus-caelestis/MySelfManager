@@ -51,6 +51,7 @@
             this.この下に作業を挿入ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.RemoveTask_ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.Rename_ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.workProgressHandle_)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -86,6 +87,7 @@
             this.taskTreeView_.ShowPlusMinus = false;
             this.taskTreeView_.Size = new System.Drawing.Size(467, 177);
             this.taskTreeView_.TabIndex = 2;
+            this.taskTreeView_.AfterLabelEdit += new System.Windows.Forms.NodeLabelEditEventHandler(this.taskTreeView__AfterLabelEdit);
             this.taskTreeView_.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
             this.taskTreeView_.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.taskTreeView__NodeMouseClick);
             // 
@@ -228,45 +230,53 @@
             this.この上に作業を挿入ToolStripMenuItem,
             this.この下に作業を挿入ToolStripMenuItem,
             this.toolStripSeparator2,
+            this.Rename_ToolStripMenuItem,
             this.RemoveTask_ToolStripMenuItem});
             this.taskContextMenu_.Name = "contextMenuStrip1";
-            this.taskContextMenu_.Size = new System.Drawing.Size(230, 136);
+            this.taskContextMenu_.Size = new System.Drawing.Size(243, 166);
             // 
             // addChild_ToolStripMenuItem
             // 
             this.addChild_ToolStripMenuItem.Name = "addChild_ToolStripMenuItem";
-            this.addChild_ToolStripMenuItem.Size = new System.Drawing.Size(229, 30);
+            this.addChild_ToolStripMenuItem.Size = new System.Drawing.Size(242, 30);
             this.addChild_ToolStripMenuItem.Text = "子作業を追加";
             this.addChild_ToolStripMenuItem.Click += new System.EventHandler(this.addChild_ToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(226, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(239, 6);
             // 
             // この上に作業を挿入ToolStripMenuItem
             // 
             this.この上に作業を挿入ToolStripMenuItem.Name = "この上に作業を挿入ToolStripMenuItem";
-            this.この上に作業を挿入ToolStripMenuItem.Size = new System.Drawing.Size(229, 30);
+            this.この上に作業を挿入ToolStripMenuItem.Size = new System.Drawing.Size(242, 30);
             this.この上に作業を挿入ToolStripMenuItem.Text = "この上に作業を挿入";
             // 
             // この下に作業を挿入ToolStripMenuItem
             // 
             this.この下に作業を挿入ToolStripMenuItem.Name = "この下に作業を挿入ToolStripMenuItem";
-            this.この下に作業を挿入ToolStripMenuItem.Size = new System.Drawing.Size(229, 30);
+            this.この下に作業を挿入ToolStripMenuItem.Size = new System.Drawing.Size(242, 30);
             this.この下に作業を挿入ToolStripMenuItem.Text = "この下に作業を挿入";
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(226, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(239, 6);
             // 
             // RemoveTask_ToolStripMenuItem
             // 
             this.RemoveTask_ToolStripMenuItem.Name = "RemoveTask_ToolStripMenuItem";
-            this.RemoveTask_ToolStripMenuItem.Size = new System.Drawing.Size(229, 30);
+            this.RemoveTask_ToolStripMenuItem.Size = new System.Drawing.Size(242, 30);
             this.RemoveTask_ToolStripMenuItem.Text = "削除";
             this.RemoveTask_ToolStripMenuItem.Click += new System.EventHandler(this.EraseTask_ToolStripMenuItem_Click);
+            // 
+            // Rename_ToolStripMenuItem
+            // 
+            this.Rename_ToolStripMenuItem.Name = "Rename_ToolStripMenuItem";
+            this.Rename_ToolStripMenuItem.Size = new System.Drawing.Size(242, 30);
+            this.Rename_ToolStripMenuItem.Text = "名前の変更";
+            this.Rename_ToolStripMenuItem.Click += new System.EventHandler(this.Rename_ToolStripMenuItem_Click);
             // 
             // MySelfManager
             // 
@@ -319,6 +329,7 @@
         private System.Windows.Forms.ToolStripMenuItem この下に作業を挿入ToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripMenuItem RemoveTask_ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem Rename_ToolStripMenuItem;
     }
 }
 

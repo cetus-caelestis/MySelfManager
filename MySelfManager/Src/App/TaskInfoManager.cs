@@ -83,9 +83,10 @@ namespace MySelfManager
         }
 
         // 要素を探索
-        private TaskInfo FindImpl(string key)
+        private TaskInfo FindImpl(string path)
         {
-            return new TaskInfo(m_taskTree.XPathSelectElement(ToXPath(key)));
+            if (path.Length == 0) { return null; }
+            return new TaskInfo(m_taskTree.XPathSelectElement(ToXPath(path)));
         }
 
         // 事前にXPathSelectElementでチェックを行うこと

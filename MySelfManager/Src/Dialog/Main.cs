@@ -47,6 +47,11 @@ namespace MySelfManager
                 MessageBox.Show("タスク名が入力されていません", "注意", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
+            if (taskname.IndexOfAny(InvalidChars) != -1)
+            {
+                MessageBox.Show("無効な文字が含まれています：\n" + new string(InvalidChars), "注意");
+                return;
+            }
             textBox1.Text = "";
 
             // 登録とビューの更新
@@ -330,8 +335,54 @@ namespace MySelfManager
         private void MySelfManager_Deactivate(object sender, EventArgs e)
         {
             // todo 後々ツールの設定から編集できるようにする
-            const double DeactivateOpacity = 0.20;
+            const double DeactivateOpacity = 0.35;
             Opacity = DeactivateOpacity;
+        }
+
+        // 名前の変更を開始する
+        // https://msdn.microsoft.com/ja-jp/library/system.windows.forms.treenode.beginedit(v=vs.110).aspx
+        private void Rename_ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (taskTreeView_.SelectedNode == null) return;
+
+            // 編集可能状態に設定
+            taskTreeView_.LabelEdit = true;
+            if (!taskTreeView_.SelectedNode.IsEditing)
+            {
+                taskTreeView_.SelectedNode.BeginEdit();
+            }
+        }
+        // 名前の変更を終了する
+        private void taskTreeView__AfterLabelEdit(object sender, NodeLabelEditEventArgs e)
+        {
+            // hack: 助長な部分が多い、もう少し短くできるはず..
+            if (e.Label == null)
+            {
+                taskTreeView_.LabelEdit = false;
+                return;
+            }
+            if(e.Label.Length == 0)
+            {
+                e.CancelEdit = true;
+                taskTreeView_.LabelEdit = false;
+                return;
+            }
+
+            if (e.Label.IndexOfAny(InvalidChars) == -1)
+            {
+                e.Node.EndEdit(false);
+                taskTreeView_.LabelEdit = false;
+            }
+            else
+            {
+                e.CancelEdit = true;
+                MessageBox.Show("無効な文字が含まれています：\n " + new string(InvalidChars), "注意");
+                e.Node.BeginEdit();
+            }
+        }
+        private char[] InvalidChars
+        {
+            get { return new char[] { '@', '.', ',', '!', ';',':' };  }
         }
     }
 }
