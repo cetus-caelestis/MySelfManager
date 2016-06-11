@@ -21,7 +21,9 @@ namespace MySelfManager
             InitializeComponent();
             m_formAnimator.TimerEvent += FormAnimationEvent;
             taskTreeView_.PathSeparator = "/";
-            this.TopMost = true;
+
+            // 追加のウィンドウ設定
+            Size = Properties.Settings.Default.windowSize;
 
             // 前回のロード
             LoadTaskHistory();
@@ -302,14 +304,15 @@ namespace MySelfManager
         // ロード
         private void LoadTaskHistory()
         {
-            TaskInfoManager.Load(Settings.Default.serializedTasks);
+            TaskInfoManager.Load(Properties.Settings.Default.serializedTasks);
             FullUpdate();
         }
         // セーブ
         private void SaveTaskHistory()
         {
-            Settings.Default.serializedTasks = TaskInfoManager.Serialize();
-            Settings.Default.Save();
+            Properties.Settings.Default.serializedTasks = TaskInfoManager.Serialize();
+            Properties.Settings.Default.windowSize = Size;
+            Properties.Settings.Default.Save();
         }
 
         private void MySelfManager_FormClosed(object sender, FormClosedEventArgs e)

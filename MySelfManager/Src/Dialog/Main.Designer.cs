@@ -85,7 +85,7 @@
             this.taskTreeView_.Location = new System.Drawing.Point(12, 12);
             this.taskTreeView_.Name = "taskTreeView_";
             this.taskTreeView_.ShowPlusMinus = false;
-            this.taskTreeView_.Size = new System.Drawing.Size(467, 177);
+            this.taskTreeView_.Size = new System.Drawing.Size(467, 168);
             this.taskTreeView_.TabIndex = 2;
             this.taskTreeView_.AfterLabelEdit += new System.Windows.Forms.NodeLabelEditEventHandler(this.taskTreeView__AfterLabelEdit);
             this.taskTreeView_.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
@@ -175,7 +175,7 @@
             this.groupBox1.Controls.Add(this.finishBotton_);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.workProgressHandle_);
-            this.groupBox1.Location = new System.Drawing.Point(12, 206);
+            this.groupBox1.Location = new System.Drawing.Point(12, 197);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(467, 249);
             this.groupBox1.TabIndex = 3;
@@ -214,7 +214,7 @@
             this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.groupBox2.Controls.Add(this.textBox1);
             this.groupBox2.Controls.Add(this.button1);
-            this.groupBox2.Location = new System.Drawing.Point(12, 461);
+            this.groupBox2.Location = new System.Drawing.Point(12, 452);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(467, 82);
             this.groupBox2.TabIndex = 4;
@@ -282,7 +282,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(488, 553);
+            this.ClientSize = new System.Drawing.Size(488, 544);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.taskTreeView_);
@@ -292,6 +292,7 @@
             this.Name = "MySelfManager";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "MySelfManager";
+            this.TopMost = true;
             this.Activated += new System.EventHandler(this.MySelfManager_Activated);
             this.Deactivate += new System.EventHandler(this.MySelfManager_Deactivate);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MySelfManager_FormClosed);

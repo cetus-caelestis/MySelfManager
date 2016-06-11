@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace MySelfManager{
+namespace MySelfManager.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
@@ -32,6 +32,18 @@ namespace MySelfManager{
             }
             set {
                 this["serializedTasks"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("510, 480")]
+        public global::System.Drawing.Size windowSize {
+            get {
+                return ((global::System.Drawing.Size)(this["windowSize"]));
+            }
+            set {
+                this["windowSize"] = value;
             }
         }
     }
