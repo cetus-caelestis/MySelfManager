@@ -49,9 +49,9 @@ namespace MySelfManager
                 MessageBox.Show("タスク名が入力されていません", "注意", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
-            if (taskname.IndexOfAny(InvalidChars) != -1)
+            if (!Utility.IsValidXmlName(taskname))
             {
-                MessageBox.Show("無効な文字が含まれています：\n" + new string(InvalidChars), "注意");
+                MessageBox.Show("無効な文字が含まれています：\n", "注意");
                 return;
             }
             textBox1.Text = "";
@@ -279,8 +279,7 @@ namespace MySelfManager
                 if (node == null) return;
 
                 // アクティブ中のタスクの配下に追加
-                string[] names = WorkDescriber.ResultString.Split(new string[] { "\r\n" }, StringSplitOptions.None);
-                TaskInfoManager.EntryRange(node.FullPath, names);
+                TaskInfoManager.EntryRange(node.FullPath, WorkDescriber.ResultStrings);
 
                 // ツリービュー更新
                 TreeViewUpdate();
@@ -356,22 +355,18 @@ namespace MySelfManager
                 taskTreeView_.LabelEdit = false;
                 return;
             }
-
-            if (e.Label.IndexOfAny(InvalidChars) == -1)
-            {
-                e.Node.EndEdit(false);
-                taskTreeView_.LabelEdit = false;
-            }
-            else
+            if (!Utility.IsValidXmlName(e.Label))
             {
                 e.CancelEdit = true;
-                MessageBox.Show("無効な文字が含まれています：\n " + new string(InvalidChars), "注意");
+                MessageBox.Show("無効な文字が含まれています：\n ", "注意");
                 e.Node.BeginEdit();
+                return;
+
             }
-        }
-        private char[] InvalidChars
-        {
-            get { return new char[] { '@', '.', ',', '!', ';',':' };  }
+
+            // 正しく終了
+            e.Node.EndEdit(false);
+            taskTreeView_.LabelEdit = false;
         }
 
         private void taskTreeView__AfterCollapse(object sender, TreeViewEventArgs e)

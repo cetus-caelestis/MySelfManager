@@ -77,7 +77,7 @@
             this.label1.TabIndex = 13;
             this.label1.Text = "追加する作業：";
             // 
-            // workDescriber
+            // WorkDescriber
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -87,9 +87,10 @@
             this.Controls.Add(this.button1);
             this.Controls.Add(this.transitionBotton_);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
-            this.Name = "workDescriber";
+            this.Name = "WorkDescriber";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "作業の追加";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.WorkDescriber_FormClosing);
             this.ResumeLayout(false);
             this.PerformLayout();
 
