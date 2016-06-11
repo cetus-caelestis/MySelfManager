@@ -29,6 +29,9 @@ namespace MySelfManager
         // 状態
         private TaskStatus m_state = TaskStatus.still;
 
+        // 展開されているか (ツールで必要な情報)
+        private bool m_isExpanded = true;
+
         // アタッチされているelem
         private XElement m_elem = null;
 
@@ -86,6 +89,16 @@ namespace MySelfManager
                 m_elem?.SetAttributeValue("state", (int)m_state);
             }
         }
+        public bool IsExpanded
+        {
+            get { return m_isExpanded; }
+            set
+            {
+                m_isExpanded = value;
+                m_elem?.SetAttributeValue("isExpanded", m_isExpanded);
+            }
+        }
+
         public string StatusText
         {
             get { return GetStatusText(m_state); }
@@ -107,6 +120,18 @@ namespace MySelfManager
                 m_name = elem.Attribute("name").Value;
                 m_percent = int.Parse(elem.Attribute("percent").Value);
                 m_state = (TaskStatus)int.Parse(elem.Attribute("state").Value);
+
+                // これ以降は必須ではないパラメータ
+                string valueTmp;
+
+                valueTmp = elem.Attribute("start")?.Value;
+                if (valueTmp != null) m_start = DateTime.Parse(valueTmp);
+
+                valueTmp = elem.Attribute("end")?.Value;
+                if (valueTmp != null) m_end = DateTime.Parse(valueTmp);
+
+                valueTmp = elem.Attribute("isExpanded")?.Value;
+                if(valueTmp != null) m_isExpanded = bool.Parse(valueTmp);
             }
         }
         public static string GetStatusText(TaskStatus stat)
@@ -144,6 +169,7 @@ namespace MySelfManager
                 elem.SetAttributeValue("start", info.m_start);
                 elem.SetAttributeValue("end", info.m_end);
                 elem.SetAttributeValue("state", (int)info.m_state);
+                elem.SetAttributeValue("isExpanded", info.m_isExpanded);
             }
             return new TaskInfo(elem);
         }

@@ -155,20 +155,33 @@ namespace MySelfManager
         private void TreeViewUpdate()
         {
             var selectedPath = taskTreeView_.SelectedNode?.FullPath;
+            TreeNodeCollection backup = taskTreeView_.Nodes;
             taskTreeView_.Nodes.Clear();
 
             TaskInfoManager.ForEach(
             (path, info) =>
             {
                 // ノードの追加
-                var node = PopulateTreeView(taskTreeView_, path);
+                var node = Utility.PopulateTreeView(taskTreeView_, path);
+                if (node == null) return;
 
                 // テキストなどの状態変更
-                if (node != null)
-                {
-                    node.ForeColor = info.StatusColor;
-                }
+                node.ForeColor = info.StatusColor;
             });
+
+            // 状態の維持 (ツリーが完成してからもう一度ループ)
+            TaskInfoManager.ForEach(
+           (path, info) =>
+           {
+               var nodes = taskTreeView_.Nodes.Find(path + taskTreeView_.PathSeparator, true);
+               if (nodes.Count() == 0) return;
+
+               // 要素の展開を制御
+               if (info.IsExpanded)
+                   nodes[0].Expand();
+               else
+                   nodes[0].Collapse();
+           });
 
             // ビュー更新前の選択を維持する
             if (selectedPath != null)
@@ -176,8 +189,6 @@ namespace MySelfManager
                 TreeNode[] nodes = taskTreeView_.Nodes.Find(selectedPath + taskTreeView_.PathSeparator, true);
                 taskTreeView_.SelectedNode = (nodes.Count() > 0) ? nodes[0] : null;
             }
-            // 折りたたまれた要素の全展開
-            taskTreeView_.ExpandAll();
         }
         // ツリービューの装飾のみ更新
         private void TreeViewDecorationUpdate(TreeNodeCollection parentnodes)
@@ -276,31 +287,6 @@ namespace MySelfManager
             });
         }
 
-        //http://stackoverflow.com/questions/1155977/populate-treeview-from-a-list-of-path
-        private static TreeNode PopulateTreeView(TreeView treeView, string path)
-        {
-            TreeNode lastNode = null;
-            string subPathAgg = string.Empty;
-
-            foreach (string subPath in path.Split(treeView.PathSeparator.ToCharArray()))
-            {
-                subPathAgg += subPath + treeView.PathSeparator;
-                TreeNode[] nodes = treeView.Nodes.Find(subPathAgg, true);
-                if (nodes.Length == 0)
-                {
-                    if (lastNode == null)
-                        lastNode = treeView.Nodes.Add(subPathAgg, subPath);
-                    else
-                        lastNode = lastNode.Nodes.Add(subPathAgg, subPath);
-                }
-                else
-                {
-                    lastNode = nodes[0];
-                }
-            }
-            return lastNode;
-        }
-
         // ロード
         private void LoadTaskHistory()
         {
@@ -386,6 +372,18 @@ namespace MySelfManager
         private char[] InvalidChars
         {
             get { return new char[] { '@', '.', ',', '!', ';',':' };  }
+        }
+
+        private void taskTreeView__AfterCollapse(object sender, TreeViewEventArgs e)
+        {
+            var info = TaskInfoManager.Find(e.Node?.FullPath);
+            if(info != null) info.IsExpanded = false;          
+        }
+
+        private void taskTreeView__AfterExpand(object sender, TreeViewEventArgs e)
+        {
+            var info = TaskInfoManager.Find(e.Node?.FullPath);
+            if (info != null) info.IsExpanded = true;
         }
     }
 }

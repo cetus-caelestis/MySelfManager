@@ -66,6 +66,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Src\Common\UtilityForms.cs" />
     <Compile Include="Src\Dialog\Main.cs">
       <SubType>Form</SubType>
     </Compile>
