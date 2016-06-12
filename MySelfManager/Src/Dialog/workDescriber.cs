@@ -36,7 +36,7 @@ namespace MySelfManager
             var namelines = textBox1.Text.Split(new string[] { "\r\n" }, StringSplitOptions.None);
             foreach (var name in namelines)
             {
-                if (!MyUtility.Utility.IsValidXmlName(name))
+                if (!MyUtility.Utility.Xml.IsValidXmlName(name))
                 {
                     MessageBox.Show("無効な文字が含まれています：\n", "注意");
                     e.Cancel = true;

@@ -41,6 +41,8 @@ namespace MySelfManager
             set
             {
                 m_name = value;
+
+                m_elem.Name = value;
                 m_elem?.SetAttributeValue("name", m_name);
             }
         }

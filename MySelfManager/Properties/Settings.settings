@@ -8,5 +8,8 @@
     <Setting Name="windowSize" Type="System.Drawing.Size" Scope="User">
       <Value Profile="(Default)">510, 480</Value>
     </Setting>
+    <Setting Name="lastDay" Type="System.DateTime" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>

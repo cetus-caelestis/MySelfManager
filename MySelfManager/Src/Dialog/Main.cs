@@ -14,12 +14,9 @@ namespace MySelfManager
 
     public partial class MySelfManager : Form
     {
-        private EaseAnimator m_formAnimator = new EaseAnimator(Ease.InOut2);
-
         public MySelfManager()
         {
             InitializeComponent();
-            m_formAnimator.TimerEvent += FormAnimationEvent;
             taskTreeView_.PathSeparator = "/";
 
             // 追加のウィンドウ設定
@@ -49,7 +46,7 @@ namespace MySelfManager
                 MessageBox.Show("タスク名が入力されていません", "注意", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
-            if (!Utility.IsValidXmlName(taskname))
+            if (!Utility.Xml.IsValidXmlName(taskname))
             {
                 MessageBox.Show("無効な文字が含まれています：\n", "注意");
                 return;
@@ -162,7 +159,7 @@ namespace MySelfManager
             (path, info) =>
             {
                 // ノードの追加
-                var node = Utility.PopulateTreeView(taskTreeView_, path);
+                var node = Utility.Forms.PopulateTreeView(taskTreeView_, path);
                 if (node == null) return;
 
                 // テキストなどの状態変更
@@ -250,7 +247,10 @@ namespace MySelfManager
             {
                 var nextNode = nodegroup[0].NextNode;
                 var nextInfo = TaskInfoManager.Find(nextNode.FullPath);
-                nextInfo.State = TaskStatus.active;
+
+                if(nextInfo.State == TaskStatus.still)
+                    nextInfo.State = TaskStatus.active;
+
                 TreeViewDecorationUpdate(nextNode.Parent.Nodes);
                 taskTreeView_.SelectedNode = nextNode;
             }
@@ -290,7 +290,15 @@ namespace MySelfManager
         private void LoadTaskHistory()
         {
             TaskInfoManager.Load(Properties.Settings.Default.serializedTasks);
-            FullUpdate();
+
+            if (Properties.Settings.Default.lastDay.Day != DateTime.Today.Day)
+            {
+                TaskInfoManager.OutputHistory(DateTime.Today.AddSeconds(-1));
+                Properties.Settings.Default.lastDay = DateTime.Today;
+                Properties.Settings.Default.Save();
+            }
+ 
+           FullUpdate();
         }
         // セーブ
         private void SaveTaskHistory()
@@ -355,7 +363,7 @@ namespace MySelfManager
                 taskTreeView_.LabelEdit = false;
                 return;
             }
-            if (!Utility.IsValidXmlName(e.Label))
+            if (!Utility.Xml.IsValidXmlName(e.Label))
             {
                 e.CancelEdit = true;
                 MessageBox.Show("無効な文字が含まれています：\n ", "注意");
@@ -363,6 +371,10 @@ namespace MySelfManager
                 return;
 
             }
+
+            // 名前の変更を反映
+            var info = TaskInfoManager.Find(e.Node.FullPath);
+            if(info != null) info.Name = e.Label;
 
             // 正しく終了
             e.Node.EndEdit(false);
@@ -430,7 +442,7 @@ namespace MySelfManager
                     (TreeNode)e.Data.GetData(typeof(TreeNode));
                 //マウス下のNodeがドロップ先として適切か調べる
                 if (target != null && target != source &&
-                        !Utility.IsChildNode(source, target))
+                        !Utility.Forms.IsChildNode(source, target))
                 {
                     //Nodeを選択する
                     if (target.IsSelected == false)
@@ -454,7 +466,7 @@ namespace MySelfManager
                     tv.GetNodeAt(tv.PointToClient(new Point(e.X, e.Y)));
                 //マウス下のNodeがドロップ先として適切か調べる
                 if (target != null && target != source &&
-                    !Utility.IsChildNode(source, target))
+                    !Utility.Forms.IsChildNode(source, target))
                 {
                     //ドロップされたNodeのコピーを作成
                     TreeNode cln = (TreeNode)source.Clone();

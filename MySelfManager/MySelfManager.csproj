@@ -66,8 +66,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Src\Common\UtilityForms.cs" />
-    <Compile Include="Src\Common\UtilityXml.cs" />
+    <Compile Include="Src\App\TaskInfoWriter.cs" />
+    <Compile Include="Src\Common\Utility.cs" />
+    <Compile Include="Src\Common\Utility.Forms.cs" />
+    <Compile Include="Src\Common\Utility.Xml.cs" />
     <Compile Include="Src\Dialog\Main.cs">
       <SubType>Form</SubType>
     </Compile>

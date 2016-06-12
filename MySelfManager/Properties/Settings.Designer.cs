@@ -46,5 +46,16 @@ namespace MySelfManager.Properties {
                 this["windowSize"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.DateTime lastDay {
+            get {
+                return ((global::System.DateTime)(this["lastDay"]));
+            }
+            set {
+                this["lastDay"] = value;
+            }
+        }
     }
 }

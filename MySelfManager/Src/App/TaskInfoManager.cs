@@ -31,13 +31,8 @@ namespace MySelfManager
         // 要素の移動
         static public void Move(string beforePath, string aftorPath)
         {
-            var oldElem = Get().m_taskTree.XPathSelectElement(ToXPath(beforePath));
-            if (oldElem == null) return;
-
-            oldElem.Remove();
-            Get().InsertNode(Get().m_taskTree, ToXPath(aftorPath), oldElem);
+            Utility.Xml.Move(Get().m_taskTree, ToXPath(beforePath), ToXPath(aftorPath));
         }
-
         // ロード
         public bool LoadImpl(string serializedStr)
         {
@@ -51,6 +46,55 @@ namespace MySelfManager
             }
             return true;
         }
+
+        // 古い履歴の書き出しと削除
+        // hack 助長な気がする
+        static public void OutputHistory(DateTime until)
+        {
+            // 終了済みのタスクを抜き出す
+            var cloneTree = XElement.Parse(Get().m_taskTree.ToString());
+            Utility.Xml.ForEach(Get().m_taskTree.Elements(), (path, elem) =>
+            {
+                // 同じノードをクローンから探す
+                var cloneElem = cloneTree.XPathSelectElement(path);
+                if (cloneElem == null) return;
+
+                // まだ終わっていないタスクは排除する
+                var notcompletion = Utility.Xml.AllOf(cloneElem, (p, e) =>
+                {
+                    var info = new TaskInfo(e);
+
+                    // 排除条件
+                    if (info.End > until) return true;
+                    if (info.State != TaskStatus.completion) return true;
+
+                    return false;
+                });
+                if (notcompletion)
+                    cloneElem.Remove();
+            });
+            // 残った終了済み要素を書き出す
+            TaskInfoWriter.Write("History" + until.ToString("yyyyMMdd") + ".txt", cloneTree.Elements(), until);
+
+            // 終了済みのタスクを削除する
+            Utility.Xml.ForEach(cloneTree.Elements(), (clonePath, cloneElem) =>
+            {
+                // 同じノードをオリジナルから探す
+                var elem = Get().m_taskTree.XPathSelectElement(clonePath);
+                if (elem == null) return;
+
+                var iscompletion = Utility.Xml.AllOf(cloneElem, (p, e) =>
+                {
+                    var info = new TaskInfo(e);
+                    if (info.End > until) return false;
+                    if (info.State != TaskStatus.completion) return false;
+
+                    return true;
+                });
+                if (iscompletion) elem.Remove();
+            });
+        }
+
         // https://msdn.microsoft.com/ja-jp/library/system.xml.linq.xelement.writeto(v=vs.110).aspx
         public string SerializeImpl()
         {
@@ -70,7 +114,7 @@ namespace MySelfManager
             var elem = m_taskTree.XPathSelectElement(ToXPath(path));
 
             if (elem == null)
-                elem = InsertNode(m_taskTree, ToXPath(path));
+                elem = Utility.Xml.InsertNode(m_taskTree, ToXPath(path));
 
             var info = TaskInfo.Apply(ref elem);
             info.Name = name;
@@ -100,47 +144,14 @@ namespace MySelfManager
             return new TaskInfo(m_taskTree.XPathSelectElement(ToXPath(path)));
         }
 
-        // 事前にXPathSelectElementでチェックを行うこと
-        private XElement InsertNode(XElement parent, string xPath, XElement newElem = null)
-        {
-            // パース
-            string[] paths = xPath.Split("/".ToCharArray(), 2);
-
-            // 要素を追加
-            var elem = parent.Element(paths[0]);
-            if (elem == null)
-            {
-                if (newElem != null && paths.Count() == 1 && paths[0] == newElem.Name.LocalName)
-                    parent.Add(XElement.Parse(newElem.ToString()));
-                else
-                    parent.Add(new XElement(paths[0]) );
-
-                elem = parent.Element(paths[0]);
-            }
-            // ここが最後
-            if (paths.Count() == 1)
-            {
-                return elem;
-            }
-            // 再起
-            return InsertNode(elem, paths[1], newElem);
-        }
         // 列挙
-        // todo: 言語使用のForEachと利用方法を差し替えるか考え中..
         private void ForEachImpl(Action<string, TaskInfo> func)
         {
-            ForEachImpl(m_taskTree.Elements(), "", func);
-        }
-        private void ForEachImpl(IEnumerable<XElement> elements, string path, Action<string, TaskInfo> func)
-        {
-            foreach (var elem in elements)
-            {
-                string currentPath = path + elem.Name;
-                func(currentPath, new TaskInfo(elem));
+            Utility.Xml.ForEach(m_taskTree.Elements(), (path, elem) =>
+             {
+                 func(path, new TaskInfo(elem));
+             });
 
-                // 子に対して再起
-                ForEachImpl(elem.Elements(), currentPath + "/", func);
-            }
         }
 
         static private string ToXPath(string str)

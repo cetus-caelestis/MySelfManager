@@ -7,9 +7,8 @@ using System.Windows.Forms;
 
 namespace MyUtility
 {
-    partial class Utility
+    partial class Utility { public class Forms
     {
-
         static public void ForEach(TreeNodeCollection treeNode, Action<TreeNode> callback)
         {
             // Print the node.
@@ -59,5 +58,5 @@ namespace MyUtility
             else
                 return false;
         }
-    }
+    } }
 }
