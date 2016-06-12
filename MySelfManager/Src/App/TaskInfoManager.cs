@@ -13,6 +13,7 @@ namespace MySelfManager
     {
         private XElement m_taskTree = new XElement("root");
 
+        // todo impl関数の実装をstatic関数側に統合して排除
         static public void Load(string serializedStr) { Get().LoadImpl(serializedStr); }
 
         static public string Serialize() { return Get().SerializeImpl(); }
@@ -26,6 +27,16 @@ namespace MySelfManager
         static public void ForEach(Action<string, TaskInfo> func) { Get().ForEachImpl(func); }
 
         static public TaskInfo Find(string key) { return Get().FindImpl(key); }
+
+        // 要素の移動
+        static public void Move(string beforePath, string aftorPath)
+        {
+            var oldElem = Get().m_taskTree.XPathSelectElement(ToXPath(beforePath));
+            if (oldElem == null) return;
+
+            oldElem.Remove();
+            Get().InsertNode(Get().m_taskTree, ToXPath(aftorPath), oldElem);
+        }
 
         // ロード
         public bool LoadImpl(string serializedStr)
@@ -90,7 +101,7 @@ namespace MySelfManager
         }
 
         // 事前にXPathSelectElementでチェックを行うこと
-        private XElement InsertNode(XElement parent, string xPath)
+        private XElement InsertNode(XElement parent, string xPath, XElement newElem = null)
         {
             // パース
             string[] paths = xPath.Split("/".ToCharArray(), 2);
@@ -99,17 +110,20 @@ namespace MySelfManager
             var elem = parent.Element(paths[0]);
             if (elem == null)
             {
-                parent.Add(new XElement(paths[0]) );
+                if (newElem != null && paths.Count() == 1 && paths[0] == newElem.Name.LocalName)
+                    parent.Add(XElement.Parse(newElem.ToString()));
+                else
+                    parent.Add(new XElement(paths[0]) );
+
                 elem = parent.Element(paths[0]);
             }
-
             // ここが最後
             if (paths.Count() == 1)
             {
                 return elem;
             }
             // 再起
-            return InsertNode(elem, paths[1]);
+            return InsertNode(elem, paths[1], newElem);
         }
         // 列挙
         // todo: 言語使用のForEachと利用方法を差し替えるか考え中..
@@ -129,7 +143,7 @@ namespace MySelfManager
             }
         }
 
-        private string ToXPath(string str)
+        static private string ToXPath(string str)
         {
             str.Replace(@"\", @"/");
             return str;

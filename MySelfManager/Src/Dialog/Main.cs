@@ -380,5 +380,100 @@ namespace MySelfManager
             var info = TaskInfoManager.Find(e.Node?.FullPath);
             if (info != null) info.IsExpanded = true;
         }
+
+        // アイテムのドラッグを開始
+        // http://dobon.net/vb/dotnet/control/tvdraganddrop.html
+        private void taskTreeView__ItemDrag(object sender, ItemDragEventArgs e)
+        {
+            TreeView tv = (TreeView)sender;
+            tv.SelectedNode = (TreeNode)e.Item;
+            tv.Focus();
+            //ノードのドラッグを開始する
+            DragDropEffects dde =
+                tv.DoDragDrop(e.Item, DragDropEffects.All);
+            //移動した時は、ドラッグしたノードを削除する
+            if ((dde & DragDropEffects.Move) == DragDropEffects.Move)
+                tv.Nodes.Remove((TreeNode)e.Item);
+        }
+
+        private void taskTreeView__DragOver(object sender, DragEventArgs e)
+        {
+            //ドラッグされているデータがTreeNodeか調べる
+            if (e.Data.GetDataPresent(typeof(TreeNode)))
+            {
+                if ((e.KeyState & 8) == 8 &&
+                    (e.AllowedEffect & DragDropEffects.Copy) ==
+                    DragDropEffects.Copy)
+                    //Ctrlキーが押されていればCopy
+                    //"8"はCtrlキーを表す
+                    e.Effect = DragDropEffects.Copy;
+                else if ((e.AllowedEffect & DragDropEffects.Move) ==
+                    DragDropEffects.Move)
+                    //何も押されていなければMove
+                    e.Effect = DragDropEffects.Move;
+                else
+                    e.Effect = DragDropEffects.None;
+            }
+            else
+                //TreeNodeでなければ受け入れない
+                e.Effect = DragDropEffects.None;
+
+            //マウス下のNodeを選択する
+            if (e.Effect != DragDropEffects.None)
+            {
+                TreeView tv = (TreeView)sender;
+                //マウスのあるNodeを取得する
+                TreeNode target =
+                    tv.GetNodeAt(tv.PointToClient(new Point(e.X, e.Y)));
+                //ドラッグされているNodeを取得する
+                TreeNode source =
+                    (TreeNode)e.Data.GetData(typeof(TreeNode));
+                //マウス下のNodeがドロップ先として適切か調べる
+                if (target != null && target != source &&
+                        !Utility.IsChildNode(source, target))
+                {
+                    //Nodeを選択する
+                    if (target.IsSelected == false)
+                        tv.SelectedNode = target;
+                }
+                else
+                    e.Effect = DragDropEffects.None;
+            }
+        }
+        private void taskTreeView__DragDrop(object sender, DragEventArgs e)
+        {
+            //ドロップされたデータがTreeNodeか調べる
+            if (e.Data.GetDataPresent(typeof(TreeNode)))
+            {
+                TreeView tv = (TreeView)sender;
+                //ドロップされたデータ(TreeNode)を取得
+                TreeNode source =
+                    (TreeNode)e.Data.GetData(typeof(TreeNode));
+                //ドロップ先のTreeNodeを取得する
+                TreeNode target =
+                    tv.GetNodeAt(tv.PointToClient(new Point(e.X, e.Y)));
+                //マウス下のNodeがドロップ先として適切か調べる
+                if (target != null && target != source &&
+                    !Utility.IsChildNode(source, target))
+                {
+                    //ドロップされたNodeのコピーを作成
+                    TreeNode cln = (TreeNode)source.Clone();
+                    //Nodeを追加
+                    target.Nodes.Add(cln);
+                    //ドロップ先のNodeを展開
+                    target.Expand();
+                    //追加されたNodeを選択
+                    tv.SelectedNode = cln;
+
+                    // 要素の移動
+                    TaskInfoManager.Move(source.FullPath, cln.FullPath);
+
+                }
+                else
+                    e.Effect = DragDropEffects.None;
+            }
+            else
+                e.Effect = DragDropEffects.None;
+        }
     }
 }

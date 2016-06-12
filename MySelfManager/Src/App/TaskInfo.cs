@@ -117,12 +117,16 @@ namespace MySelfManager
             m_elem = elem;
             if (m_elem != null)
             {
-                m_name = elem.Attribute("name").Value;
-                m_percent = int.Parse(elem.Attribute("percent").Value);
-                m_state = (TaskStatus)int.Parse(elem.Attribute("state").Value);
-
-                // これ以降は必須ではないパラメータ
                 string valueTmp;
+
+                valueTmp = elem.Attribute("name")?.Value;
+                if (valueTmp != null) m_name = valueTmp;
+
+                valueTmp = elem.Attribute("percent")?.Value;
+                if (valueTmp != null) m_percent = int.Parse(valueTmp);
+
+                valueTmp = elem.Attribute("state")?.Value;
+                if (valueTmp != null) m_state = (TaskStatus)int.Parse(valueTmp);
 
                 valueTmp = elem.Attribute("start")?.Value;
                 if (valueTmp != null) m_start = DateTime.Parse(valueTmp);

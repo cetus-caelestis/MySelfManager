@@ -50,7 +50,7 @@ namespace MyUtility
         }
 
         // http://dobon.net/vb/dotnet/control/tvdraganddrop.html
-        private static bool IsChildNode(TreeNode parentNode, TreeNode childNode)
+        static public bool IsChildNode(TreeNode parentNode, TreeNode childNode)
         {
             if (childNode.Parent == parentNode)
                 return true;

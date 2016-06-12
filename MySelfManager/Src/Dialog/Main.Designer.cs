@@ -80,6 +80,7 @@
             // 
             // taskTreeView_
             // 
+            this.taskTreeView_.AllowDrop = true;
             this.taskTreeView_.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
             this.taskTreeView_.Location = new System.Drawing.Point(12, 12);
@@ -89,8 +90,11 @@
             this.taskTreeView_.AfterLabelEdit += new System.Windows.Forms.NodeLabelEditEventHandler(this.taskTreeView__AfterLabelEdit);
             this.taskTreeView_.AfterCollapse += new System.Windows.Forms.TreeViewEventHandler(this.taskTreeView__AfterCollapse);
             this.taskTreeView_.AfterExpand += new System.Windows.Forms.TreeViewEventHandler(this.taskTreeView__AfterExpand);
+            this.taskTreeView_.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.taskTreeView__ItemDrag);
             this.taskTreeView_.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
             this.taskTreeView_.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.taskTreeView__NodeMouseClick);
+            this.taskTreeView_.DragDrop += new System.Windows.Forms.DragEventHandler(this.taskTreeView__DragDrop);
+            this.taskTreeView_.DragOver += new System.Windows.Forms.DragEventHandler(this.taskTreeView__DragOver);
             // 
             // workProgressVal_
             // 

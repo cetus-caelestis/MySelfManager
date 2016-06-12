@@ -9,7 +9,6 @@ namespace MyUtility
 {
     partial class Utility
     {
-        // http://stackoverflow.com/questions/8331119/escape-invalid-xml-characters-in-c-sharp
         static public bool IsValidXmlName(string text)
         {
             try
